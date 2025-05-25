@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${montserrat.className} bg-zinc-400 text-white min-h-screen`}>
+        <body className={`${montserrat.className}  min-h-screen`}>
           <Provider>
             {children}
           </Provider>
