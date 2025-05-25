@@ -3,6 +3,7 @@ import { Progress } from '@/components/ui/progress';
 import { Layout, Shield } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react';
+import UploadDialogPdf from './UploadDialogPdf';
 
 function Sidebar() {
   return (
@@ -24,6 +25,7 @@ function Sidebar() {
         <Button className={"w-full"}>
             + Upload pdf
         </Button>
+        <UploadDialogPdf/>
 
         <div className='flex gap-2 items-center p-3 mt-5 hover:bg-slate-200 text-lg font-medium rounded-lg cursor-pointer'>
             <Layout/>
