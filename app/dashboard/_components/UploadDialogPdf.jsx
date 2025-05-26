@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,8 +12,42 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
+import { mutation } from '@/convex/_generated/server';
+import { useMutation } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import { Loader } from 'lucide-react';
 
 function UploadDialogPdf({ children }) {
+
+    const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl)
+
+    const [loading,setLoading]= useState(false)
+
+    const [file,setFile]= useState()
+    const onFileSelect = (event)=>{
+        setFile(event.target.files[0])
+    }
+
+    const onUpload = async()=>{
+        setLoading(true)
+
+            // Step 1: Get a short-lived upload URL
+    const postUrl = await generateUploadUrl();
+    // Step 2: POST the file to the URL
+    const result = await fetch(postUrl, {
+      method: "POST",
+      headers: { "Content-Type": file?.type },
+      body: file,
+    });
+    const { storageId } = await result.json();
+
+    console.log( "StorageId",storageId)
+
+    // Step 3: Save the newly allocated storage id to the database
+
+    setLoading(false)
+    }
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -30,6 +65,7 @@ function UploadDialogPdf({ children }) {
               Select File
             </label>
             <input
+            onChange={(event)=>{onFileSelect(event)}}
               id="pdf-upload"
               type="file"
               accept=".pdf"
@@ -54,7 +90,10 @@ function UploadDialogPdf({ children }) {
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit">Upload</Button>
+          
+          <Button onClick={onUpload} type="submit" disabled={loading}>
+                {loading ? <Loader className="animate-spin" /> : "Upload"}
+        </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
