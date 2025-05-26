@@ -9,11 +9,11 @@ import {
   } from "@/components/ui/dialog"
   
 
-function UploadDialogPdf() {
+function UploadDialogPdf({children}) {
   return (
     <div>
         <Dialog>
-  <DialogTrigger>Open</DialogTrigger>
+  <DialogTrigger>{children}</DialogTrigger>
   <DialogContent>
     <DialogHeader>
       <DialogTitle>Are you absolutely sure?</DialogTitle>

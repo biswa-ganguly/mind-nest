@@ -22,10 +22,11 @@ function Sidebar() {
       </div>
 
       <div className='mt-10'>
+      <UploadDialogPdf>
         <Button className={"w-full"}>
             + Upload pdf
         </Button>
-        <UploadDialogPdf/>
+        </UploadDialogPdf>
 
         <div className='flex gap-2 items-center p-3 mt-5 hover:bg-slate-200 text-lg font-medium rounded-lg cursor-pointer'>
             <Layout/>
