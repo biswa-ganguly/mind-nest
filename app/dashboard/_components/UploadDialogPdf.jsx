@@ -16,13 +16,19 @@ import { mutation } from '@/convex/_generated/server';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { Loader } from 'lucide-react';
+import { AddFileStorage } from '@/convex/fileStorage';
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/nextjs';
 
 function UploadDialogPdf({ children }) {
 
     const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl)
 
-    const [loading,setLoading]= useState(false)
+    const addFileEntry = useMutation(api.fileStorage.AddFileEntryToDb)
 
+    const [loading,setLoading]= useState(false)
+    const {user}= useUser()
+    const [fileName,setFileName]= useState()
     const [file,setFile]= useState()
     const onFileSelect = (event)=>{
         setFile(event.target.files[0])
@@ -42,9 +48,17 @@ function UploadDialogPdf({ children }) {
     const { storageId } = await result.json();
 
     console.log( "StorageId",storageId)
+    const fileId = uuidv4()
 
     // Step 3: Save the newly allocated storage id to the database
+    const resp = await addFileEntry({
+      fileId:fileId,
+      storageId:storageId,
+      fileName:fileName??"Untitled File",
+      createdBy:user?.primaryEmailAddress?.emailAddress
+    })
 
+    console.log(resp)
     setLoading(false)
     }
 
@@ -80,6 +94,7 @@ function UploadDialogPdf({ children }) {
             <Input
               id="file-name"
               placeholder="Enter file name"
+              onChange={(e) => setFileName(e.target.value)}
             />
           </div>
         </div>
