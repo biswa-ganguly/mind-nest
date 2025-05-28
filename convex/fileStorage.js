@@ -12,15 +12,27 @@ export const AddFileEntryToDb = mutation({
     fileId: v.string(),
     storageId: v.string(),
     fileName: v.string(),
+    fileUrl:v.string(),
     createdBy: v.string()
   },
   handler:async(ctx,args)=>{
     const result = ctx.db.insert("pdfFiles",{
       fileId:args.fileId,
       fileName: args.fileName,
+      fileUrl:args.fileUrl,
       storageId: args.storageId,
       createdBy: args.createdBy
     })
     return "inserted "
+  }
+})
+
+export const getFileUrl = mutation({
+  args:{
+    storageId:v.string()
+  },
+  handler:async(ctx,args)=>{
+    const url = await ctx.storage.getUrl(args.storageId)
+    return url
   }
 })

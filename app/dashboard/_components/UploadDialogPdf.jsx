@@ -23,8 +23,8 @@ import { useUser } from '@clerk/nextjs';
 function UploadDialogPdf({ children }) {
 
     const generateUploadUrl = useMutation(api.fileStorage.generateUploadUrl)
-
     const addFileEntry = useMutation(api.fileStorage.AddFileEntryToDb)
+    const getFileUrl = useMutation(api.fileStorage.getFileUrl)
 
     const [loading,setLoading]= useState(false)
     const {user}= useUser()
@@ -49,13 +49,17 @@ function UploadDialogPdf({ children }) {
 
     console.log( "StorageId",storageId)
     const fileId = uuidv4()
+    const fileUrl = await getFileUrl({storageId:storageId})
 
     // Step 3: Save the newly allocated storage id to the database
     const resp = await addFileEntry({
       fileId:fileId,
       storageId:storageId,
       fileName:fileName??"Untitled File",
-      createdBy:user?.primaryEmailAddress?.emailAddress
+      fileUrl:fileUrl,
+      createdBy:user?.primaryEmailAddress?.emailAddress,
+      
+
     })
 
     console.log(resp)
